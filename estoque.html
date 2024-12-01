@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Estoque</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Gestão de Estoque</h2>
+        <form id="productForm">
+            <input type="text" id="productName" placeholder="Nome do Produto" required>
+            <input type="number" id="quantity" placeholder="Quantidade" required>
+            <input type="number" step="0.01" id="price" placeholder="Preço" required>
+            <button type="submit">Adicionar Produto</button>
+        </form>
+        <div id="message"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

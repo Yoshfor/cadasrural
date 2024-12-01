@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Clientes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('fundo_azul.jpg'); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      background: rgba(255, 255, 255, 0.712); 
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    button {
+      padding: 5px 10px;
+      color: white;
+      background-color: blue;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: darkred;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lista de Clientes</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Email</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="clientesTable"></tbody>
+  </table>
+
+  <script>
+    const API_URL = "http://localhost:3000";
+
+    async function fetchClientes() {
+      try {
+        const response = await fetch(`${API_URL}/clientes`);
+        if (!response.ok) throw new Error("Erro ao buscar clientes");
+
+        const data = await response.json();
+        if (data.success) {
+          const clientesTable = document.getElementById("clientesTable");
+          clientesTable.innerHTML = ""; 
+
+          data.clientes.forEach(cliente => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${cliente.id}</td>
+              <td>${cliente.nome}</td>
+              <td>${cliente.telefone}</td>
+              <td>${cliente.email}</td>
+              <td><button onclick="excluirCliente(${cliente.id})">Excluir</button></td>
+            `;
+            clientesTable.appendChild(row);
+          });
+        } else {
+          alert("Erro ao buscar clientes: " + data.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar ao servidor.");
+      }
+    }
+
+    async function excluirCliente(id) {
+      if (!confirm("Tem certeza que deseja excluir este cliente?")) return;
+
+      try {
+        const response = await fetch(`${API_URL}/clientes/${id}`, {
+          method: "DELETE",
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert("Cliente excluído com sucesso!");
+          fetchClientes(); 
+        } else {
+          alert("Erro ao excluir cliente: " + data.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar ao servidor.");
+      }
+    }
+
+    // Chama a função ao carregar a página
+    document.addEventListener("DOMContentLoaded", fetchClientes);
+  </script>
+</body>
+</html>
