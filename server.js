@@ -6,7 +6,7 @@ const cors = require('cors');
 const { Script } = require("vm");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Configuração básica do CORS
 app.use(cors());
@@ -17,7 +17,7 @@ app.use(express.static("."));
 
 // Configuração corrigida do Pool de Conexões PostgreSQL
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, 
+  connectionString: "postgres://postgres.dtfhnixrqylyicvyqqlt:ecvLlMTPSIsivRCq@aws-0-sa-east-1.pooler.supabase.com:6543/postgres",
   ssl: {
     rejectUnauthorized: false
   },
@@ -25,8 +25,6 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000
 });
-
-module.exports = app;
 
 // Função simplificada para testar a conexão
 const testConnection = async () => {
@@ -231,6 +229,12 @@ app.get("/produtos", async (req, res) => {
     console.error("Erro ao buscar produtos:", err.message);
     res.status(500).json({ success: false, message: "Erro ao buscar produtos!" });
   }
+});
+
+app.get("/ping", async (req, res) => {
+  
+    res.json({ success: "pong" });
+  
 });
 
 // Rota para excluir produto
